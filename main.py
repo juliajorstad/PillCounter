@@ -1,16 +1,29 @@
-# This is a sample Python script.
+import numpy as np
+import cv2
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+image = cv2.imread('pillexample2.jpg')
 
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+ret, thresh = cv2.threshold(blurred, 180, 255, cv2.THRESH_BINARY)
+
+cv2.imshow('None approximation', thresh)
+cv2.waitKey(0)
+
+contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+
+# draw contours on the original image
+image_copy = image.copy()
+cv2.drawContours(image=image_copy, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
+                 lineType=cv2.LINE_AA)
+
+# see the results
+cv2.imshow('None approximation', image_copy)
+cv2.waitKey(0)
+cv2.imwrite('contours_none_image1.jpg', image_copy)
+cv2.destroyAllWindows()
+
+

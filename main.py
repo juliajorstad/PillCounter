@@ -1,58 +1,109 @@
-from ultralytics import YOLO
-import cv2
 import numpy as np
-from roi import get_roi, resize_and_pad
+import cv2
+import matplotlib.pyplot as plt
 
-# load trained model
-model = YOLO("runs/segment/train13/weights/best.pt")
+image2 = cv2.imread('pillexample.jpg')
+image = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV )
+image3 = cv2.cvtColor(image2, cv2.COLOR_BGR2HLS )
 
-# train model
-# model.train(data='datasets/data.yaml', epochs=3, imgsz=640)
+# display the image with changed contrast and brightness
+cv2.imwrite('pill_HSV.jpg', image)
+cv2.imshow('HSV', image)
+cv2.waitKey(0)
 
-# open test image
-img1 = cv2.imread("testImages/IMG_5471copy.jpg")
-img2 = get_roi(img1)
-# prediction
-img = resize_and_pad(img2, 640, 640)
-results = model.predict(img)
-mask_img = results[0].plot(labels=False, boxes=False)
+cv2.imwrite('pill_HSL.jpg', image3)
+cv2.imshow('HSL', image3)
+cv2.waitKey(0)
 
-# Convert the plot image from RGB to BGR format because OpenCV uses BGR
-mask_img = cv2.cvtColor(mask_img, cv2.COLOR_RGB2BGR)
+gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
+cv2.imwrite('pill_gray.jpg', gray)
+cv2.imshow('gray', gray)
+cv2.waitKey(0)
 
-masks = results[0].masks
-if masks is not None:
-    num_masks = len(masks)
-    print(f"Number of masks: {num_masks}")
+grayHSV = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+cv2.imwrite('pill_grayHSV.jpg', grayHSV)
+cv2.imshow('grayHSV', grayHSV)
+cv2.waitKey(0)
 
-    # Set the position and text color
-    text_position = (20, 50)  # Top-left corner of the image
-    text_content = f" {num_masks}"
-    text_color = (0, 0, 255)  # Red color for the text in BGR format
-    font_scale = 1  # Depending on your image size, you may need to adjust this
-    thickness = 2  # Thickness of the text
+grayHSL = cv2.cvtColor(image3, cv2.COLOR_BGR2GRAY)
+cv2.imwrite('pill_grayHSL.jpg', grayHSL)
+cv2.imshow('grayHSL', grayHSL)
+cv2.waitKey(0)
 
-    # Put the text on the image
-    cv2.putText(mask_img, text_content, text_position, cv2.FONT_HERSHEY_SIMPLEX, font_scale, text_color, thickness)
+blur = cv2.GaussianBlur(gray,(5,5),0)
+ret3,th3 = cv2.threshold(blur,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
-    for i in range(num_masks):
-        mask = masks[i].data[0].numpy()
-        mask = (mask * 255).astype(np.uint8)
 
-        # Find the centroid of the mask
-        M = cv2.moments(mask)
+cv2.imwrite('pill_black_and_white.jpg', th3)
+cv2.imshow('None approximation', th3)
+cv2.waitKey(0)
+
+blurHSV = cv2.GaussianBlur(grayHSV,(5,5),0)
+ret3,th3 = cv2.threshold(blurHSV,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+
+
+cv2.imwrite('pill_black_and_whiteHSV.jpg', th3)
+cv2.imshow('None approximation', th3)
+cv2.waitKey(0)
+# plot all the images and their histograms
+
+blurHSL = cv2.GaussianBlur(grayHSL,(5,5),0)
+ret3,th3 = cv2.threshold(blurHSV,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+
+
+cv2.imwrite('pill_black_and_whiteHSL.jpg', th3)
+cv2.imshow('None approximation', th3)
+cv2.waitKey(0)
+# plot all the images and their histograms
+
+blurred = cv2.GaussianBlur(th3, (9, 9), 5)
+edges = cv2.Canny(blurred,20,50)
+
+cv2.imshow('None approximation', edges)
+cv2.waitKey(0)
+
+
+
+
+
+ret, thresh = cv2.threshold(edges, 10, 255, cv2.THRESH_BINARY)
+
+cv2.imshow('None approximation', thresh)
+cv2.waitKey(0)
+
+contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+
+# draw contours on the original image
+image_copy = image.copy()
+cv2.drawContours(image=image_copy, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
+                 lineType=cv2.LINE_AA)
+
+cv2.imshow('None approximation', image_copy)
+cv2.waitKey(0)
+
+for contour in contours:
+    # Filter based on area to remove small noise
+    if cv2.contourArea(contour) > 10:  # You might need to adjust this threshold based on your image
+        M = cv2.moments(contour)
+
+        # Calculate the center of the contour (centroid)
         if M["m00"] != 0:
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
         else:
             cX, cY = 0, 0
 
-        # size of the drawn point
-        point_size = 3  # Radius of the drawn point
-        # Draw the centroid on the image as a filled circle
-        cv2.circle(mask_img, (cX, cY), point_size, (0, 0, 255), -1)  # -1 fills the circle
+        # Draw a red dot in the center
+        cv2.circle(image, (cX, cY), 5, (0, 0, 255), -1)
 
-    # Show the result
-    cv2.imshow("result", mask_img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+# Simplified counting process
+count = sum(1 for contour in contours if cv2.contourArea(contour) > 40)
+
+# Display the count on the image
+font = cv2.FONT_HERSHEY_SIMPLEX
+cv2.putText(image, f'Pills Count: {count}', (10, 30), font, 1, (255, 0, 0), 2, cv2.LINE_AA)
+
+cv2.imshow('Detected Pills', image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+

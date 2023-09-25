@@ -50,7 +50,7 @@ count = sum(1 for contour in contours if cv2.contourArea(contour) > 40)
 
 # Display the count on the image
 font = cv2.FONT_HERSHEY_SIMPLEX
-cv2.putText(image, f'Pills Count: {count}', (10, 30), font, 1, (255, 0, 0), 2, cv2.LINE_AA)
+cv2.putText(image, f'Pill Count: {count}', (10, 30), font, 1, (255, 0, 0), 2, cv2.LINE_AA)
 
 cv2.imshow('Detected Pills', image)
 cv2.waitKey(0)

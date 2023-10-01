@@ -2,15 +2,36 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
+"""video_image = cv2.VideoCapture(0)
+while True:
+    ret, frame = video_image.read()
+    if not ret:
+        print("Video capture failed")
+        break
+    cv2.imshow("Camera",frame)
+    key=cv2.waitKey(1) & 0xFF
+
+    if key == ord("s"):
+        image2=frame.copy()
+        break
+    elif key == ord("q"):
+        video_image.release()
+        cv2.destroyAllWindows()
+        exit()
+video_image.release()
+cv2.destroyAllWindows()"""
+
+
+
 image2 = cv2.imread('pillexample3.jpg')
-image_hsv = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV)
-
-
-
-# display the image with changed contrast and brightness
-cv2.imshow('HSV', image_hsv)
+cv2.imshow("Original image",image2)
 cv2.waitKey(0)
+cv2.destroyAllWindows()
 
+image_hsv = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV)
+cv2.imshow("HSV image",image_hsv)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 def preprocessing():
     # preprocessing: gray scale
     gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
@@ -20,21 +41,39 @@ def preprocessing():
     blur = cv2.GaussianBlur(gray,(5,5),0)
     blurHSV = cv2.GaussianBlur(grayHSV,(5,5),0)
 
+
+
     # Convert to binary image with Otsus thresholding
-    ret3,th3 = cv2.threshold(blur,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-    ret3,th3 = cv2.threshold(blurHSV,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    opt_value,otsu_thresh = cv2.threshold(blur,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    opt_value,otsu_thresh= cv2.threshold(blurHSV,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
+    #plot hisogram
+    #plot_histogram(blur,blurHSV,opt_value)
 
-    cv2.imshow('Threshold', th3)
+    cv2.imshow("otsu thresh", otsu_thresh)
     cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-    # plot all the images and their histograms
+    return otsu_thresh
+def plot_histogram(blur,blurHSV,ret3):
+    # Plot the histogram of Otsu's threshold
+    plt.figure(figsize=(10, 4))
+    plt.subplot(1, 2, 1)
+    plt.hist(blur.ravel(), bins=256, range=(0, 256), color='gray', alpha=0.7)
+    plt.axvline(x=ret3, color='red', linestyle='dashed', linewidth=2)
+    plt.title("Histogram of Grayscale Image with Otsu's Threshold")
+    plt.xlabel("Pixel Value")
+    plt.ylabel("Frequency")
 
-    blurred = cv2.GaussianBlur(th3, (9, 9), 5)
-    edges = cv2.Canny(blurred,20,50)
+    plt.subplot(1, 2, 2)
+    plt.hist(blurHSV.ravel(), bins=256, range=(0, 256), color='gray', alpha=0.7)
+    plt.axvline(x=ret3, color='red', linestyle='dashed', linewidth=2)
+    plt.title("Histogram of HSV Image with Otsu's Threshold")
+    plt.xlabel("Pixel Value")
+    plt.ylabel("Frequency")
 
-    return th3
-
+    plt.tight_layout()
+    plt.show()
 
 # WATERSHED
 def watershed():
@@ -63,8 +102,8 @@ def watershed():
 
     jet_colormap = cv2.applyColorMap(cv2.convertScaleAbs(dist_transform, alpha=255.0/dist_transform.max()), cv2.COLORMAP_JET)
 
-    # Display the image with jet colormap
-    cv2.imshow('Jet Colormap', image2)
+
+    cv2.imshow('Image with watershed markers', image2)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -129,10 +168,11 @@ def counter():
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.putText(image2_copy, f'Pills Count: {object_count}', (10, 30), font, 1, (255, 0, 0), 2, cv2.LINE_AA)
     cv2.imshow('Image with Centroids', image2_copy)
+
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 counter()
-# -------------------------
+
 
 

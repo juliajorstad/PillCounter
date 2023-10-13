@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
-image = cv2.imread('dataset/pill6_cropped.jpg')
+image = cv2.imread('dataset/pill6.jpg')
 cv2.imshow("Original image",image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
@@ -171,4 +171,3 @@ def plot_histogram(blur,blurHSV,ret3):
 thresh=thresholding(image)
 markers=watershed(thresh,image)
 counter(markers)
-

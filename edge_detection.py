@@ -26,7 +26,7 @@ def get_contours (img, img_copy):
     cv2.destroyAllWindows()
 
 
-image = cv2.imread('dataset/pill1.jpg')
+image = cv2.imread('dataset/pill19.jpg')
 
 gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 

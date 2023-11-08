@@ -38,7 +38,7 @@ def update_threshold(x):
     cv2.imshow("Adaptive Thresholding", combined_image)
 
 # Load an image (replace 'your_image.jpg' with your image path)
-image = cv2.imread('dataset/pill19.jpg')
+image = cv2.imread('datasets/pill19.jpg')
 
 # Convert the image to grayscale
 d = 9  # Diameter of the pixel neighborhood

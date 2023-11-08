@@ -26,7 +26,7 @@ if masks is not None:
     print(f"Number of masks: {num_masks}")
 
     # Set the position and text color
-    text_position = (10, 10)  # Top-left corner of the image
+    text_position = (20, 50)  # Top-left corner of the image
     text_content = f" {num_masks}"
     text_color = (0, 0, 255)  # Red color for the text in BGR format
     font_scale = 1  # Depending on your image size, you may need to adjust this

@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def stack_images_vertically(image_list):
     # Calculate the width and height of the output image
     width = max(img.shape[1] for img in image_list)

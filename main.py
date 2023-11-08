@@ -6,22 +6,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from roi import get_roi, resize_and_pad
 
-
 # load trained model
 model = YOLO("runs/segment/train13/weights/best.pt")
 
 # train model
-#model.train(data='datasets/data.yaml', epochs=3, imgsz=640)
+# model.train(data='datasets/data.yaml', epochs=3, imgsz=640)
 
 # open test image
 img1 = cv2.imread("testImages/IMG_5471copy.jpg")
 img2 = get_roi(img1)
 # prediction
-img = resize_and_pad(img2,640,640)
+img = resize_and_pad(img2, 640, 640)
 results = model.predict(img)
 mask_img = results[0].plot(labels=False, boxes=False)
-
-
 
 # Convert the plot image from RGB to BGR format because OpenCV uses BGR
 mask_img = cv2.cvtColor(mask_img, cv2.COLOR_RGB2BGR)
@@ -62,8 +59,3 @@ if masks is not None:
     cv2.imshow("result", mask_img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
-
-
-
-

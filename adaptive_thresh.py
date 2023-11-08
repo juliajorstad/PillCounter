@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 # CREATES A TRACKBAR TO ADJUST THRESHOLD IN REAL TIME
 def update_threshold(x):
     # Retrieve the current trackbar values
@@ -36,6 +37,7 @@ def update_threshold(x):
     combined_image = cv2.addWeighted(thresh_img, 0.7, text_image, 0.3, 0)
 
     cv2.imshow("Adaptive Thresholding", combined_image)
+
 
 # Load an image (replace 'your_image.jpg' with your image path)
 image = cv2.imread('datasets/pill19.jpg')

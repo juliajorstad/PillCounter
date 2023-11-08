@@ -1,10 +1,11 @@
 from ultralytics import YOLO
-from ultralytics import SAM
+
 import cv2
-from PIL import Image
-from PIL import Image, ImageDraw, ImageFont
+
 import numpy as np
 import matplotlib.pyplot as plt
+from roi import get_roi, resize_and_pad
+
 
 # load trained model
 model = YOLO("runs/segment/train13/weights/best.pt")
@@ -13,9 +14,10 @@ model = YOLO("runs/segment/train13/weights/best.pt")
 #model.train(data='datasets/data.yaml', epochs=3, imgsz=640)
 
 # open test image
-img = cv2.imread("datasets/test/images/IMG_0115_JPG_jpg.rf.c40bf603557d0ca04a82e1ad3548c7e6.jpg")
-
+img1 = cv2.imread("testImages/IMG_5471copy.jpg")
+img2 = get_roi(img1)
 # prediction
+img = resize_and_pad(img2,640,640)
 results = model.predict(img)
 mask_img = results[0].plot(labels=False, boxes=False)
 

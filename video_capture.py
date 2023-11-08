@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import cv2
 import numpy as np
-
+from roi import resize_and_pad
 # load trained model
 model = YOLO("runs/segment/train13/weights/best.pt")
 

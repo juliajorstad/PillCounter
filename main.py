@@ -1,9 +1,6 @@
 from ultralytics import YOLO
-
 import cv2
-
 import numpy as np
-import matplotlib.pyplot as plt
 from roi import get_roi, resize_and_pad
 
 # load trained model

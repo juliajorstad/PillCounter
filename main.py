@@ -1,109 +1,86 @@
-import numpy as np
+from ultralytics import YOLO
+
 import cv2
-import matplotlib.pyplot as plt
 
-image2 = cv2.imread('pillexample.jpg')
-image = cv2.cvtColor(image2, cv2.COLOR_BGR2HSV )
-image3 = cv2.cvtColor(image2, cv2.COLOR_BGR2HLS )
-
-# display the image with changed contrast and brightness
-cv2.imwrite('pill_HSV.jpg', image)
-cv2.imshow('HSV', image)
-cv2.waitKey(0)
-
-cv2.imwrite('pill_HSL.jpg', image3)
-cv2.imshow('HSL', image3)
-cv2.waitKey(0)
-
-gray = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
-cv2.imwrite('pill_gray.jpg', gray)
-cv2.imshow('gray', gray)
-cv2.waitKey(0)
-
-grayHSV = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-cv2.imwrite('pill_grayHSV.jpg', grayHSV)
-cv2.imshow('grayHSV', grayHSV)
-cv2.waitKey(0)
-
-grayHSL = cv2.cvtColor(image3, cv2.COLOR_BGR2GRAY)
-cv2.imwrite('pill_grayHSL.jpg', grayHSL)
-cv2.imshow('grayHSL', grayHSL)
-cv2.waitKey(0)
-
-blur = cv2.GaussianBlur(gray,(5,5),0)
-ret3,th3 = cv2.threshold(blur,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+import numpy as np
+from roi import get_roi, resize_and_pad
 
 
-cv2.imwrite('pill_black_and_white.jpg', th3)
-cv2.imshow('None approximation', th3)
-cv2.waitKey(0)
+# load trained model
+model = YOLO("../runs/segment/train13/weights/best.pt")
 
-blurHSV = cv2.GaussianBlur(grayHSV,(5,5),0)
-ret3,th3 = cv2.threshold(blurHSV,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-
-
-cv2.imwrite('pill_black_and_whiteHSV.jpg', th3)
-cv2.imshow('None approximation', th3)
-cv2.waitKey(0)
-# plot all the images and their histograms
-
-blurHSL = cv2.GaussianBlur(grayHSL,(5,5),0)
-ret3,th3 = cv2.threshold(blurHSV,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+# train model
+#model.train(data='datasets/data.yaml', epochs=3, imgsz=640)
 
 
-cv2.imwrite('pill_black_and_whiteHSL.jpg', th3)
-cv2.imshow('None approximation', th3)
-cv2.waitKey(0)
-# plot all the images and their histograms
+def get_class(cls_ids):
+    class_names = {0: "Capsules", 1: "Pills"}
 
-blurred = cv2.GaussianBlur(th3, (9, 9), 5)
-edges = cv2.Canny(blurred,20,50)
+    class_counts = {}
 
-cv2.imshow('None approximation', edges)
-cv2.waitKey(0)
+    for cls_id in cls_ids:
 
-
-
-
-
-ret, thresh = cv2.threshold(edges, 10, 255, cv2.THRESH_BINARY)
-
-cv2.imshow('None approximation', thresh)
-cv2.waitKey(0)
-
-contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-
-# draw contours on the original image
-image_copy = image.copy()
-cv2.drawContours(image=image_copy, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2,
-                 lineType=cv2.LINE_AA)
-
-cv2.imshow('None approximation', image_copy)
-cv2.waitKey(0)
-
-for contour in contours:
-    # Filter based on area to remove small noise
-    if cv2.contourArea(contour) > 10:  # You might need to adjust this threshold based on your image
-        M = cv2.moments(contour)
-
-        # Calculate the center of the contour (centroid)
-        if M["m00"] != 0:
-            cX = int(M["m10"] / M["m00"])
-            cY = int(M["m01"] / M["m00"])
+        cls_id = int(cls_id)
+        class_name = class_names.get(cls_id, f"Unknown class {cls_id}")
+        if class_name in class_counts:
+            class_counts[class_name] += 1
         else:
-            cX, cY = 0, 0
+            class_counts[class_name] = 1
 
-        # Draw a red dot in the center
-        cv2.circle(image, (cX, cY), 5, (0, 0, 255), -1)
+    return class_counts
+def show_results(masks,class_counts,img):
+    if masks is not None:
 
-# Simplified counting process
-count = sum(1 for contour in contours if cv2.contourArea(contour) > 40)
+        #class_counts = get_class()
 
-# Display the count on the image
-font = cv2.FONT_HERSHEY_SIMPLEX
-cv2.putText(image, f'Pills Count: {count}', (10, 30), font, 1, (255, 0, 0), 2, cv2.LINE_AA)
+        # Set the position and text color
+        text_position = (20, 50)  # Top-left corner of the image
+        for class_name, count in class_counts.items():
+            text_content = f"{class_name}: {count}"
+            cv2.putText(img, text_content, text_position, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            text_position = (text_position[0], text_position[1] + 30)
 
-cv2.imshow('Detected Pills', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
+        for i in range(len(masks)):
+            mask = masks[i].data[0].numpy()
+            mask = (mask * 255).astype(np.uint8)
+
+            # Find the centroid of the mask
+            M = cv2.moments(mask)
+            if M["m00"] != 0:
+                cX = int(M["m10"] / M["m00"])
+                cY = int(M["m01"] / M["m00"])
+            else:
+                cX, cY = 0, 0
+
+            # size of the drawn point
+            point_size = 3  # Radius of the drawn point
+            # Draw the centroid on the image as a filled circle
+            cv2.circle(img, (cX, cY), point_size, (0, 0, 255), -1)  # -1 fills the circle
+
+        # Show the result
+        """cv2.imshow("result", img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()"""
+    return img
+
+def predict_with_yolo(captured_img):
+    img = resize_and_pad(captured_img, 640, 640)
+
+    # Make a prediction
+    results = model.predict(img)
+    masks = results[0].masks
+    cls_ids = results[0].boxes.cls
+
+    mask_img = results[0].plot(labels=True, boxes=False)
+
+    mask_img = cv2.cvtColor(mask_img, cv2.COLOR_RGB2BGR)
+
+    class_counts = get_class(cls_ids)
+    predicted_image = show_results(masks,class_counts,img)
+
+    return predicted_image
+
+
+
 

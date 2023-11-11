@@ -3,7 +3,7 @@ val: ../valid/images
 test: ../test/images
 
 nc: 2
-names: ['Kapsel', 'Piller']
+names: ['capsules', 'pills']
 
 roboflow:
   workspace: ikt213

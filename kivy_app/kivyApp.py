@@ -18,7 +18,7 @@ import os
 
 from ultralytics import YOLO
 from main import predict_with_yolo
-model = YOLO("../runs/segment/train13/weights/best.pt")
+
 
 class UploadPopup(Popup):
     def __init__(self, on_selection, **kwargs):
@@ -133,15 +133,15 @@ class PillPalApp(MDApp):
         self.theme_cls.primary_palette = "Green"
         layout = MDBoxLayout(orientation='vertical', padding=10, spacing=10)
 
-        title_label = MDLabel(text="PillPal", halign="center",font_style="H1")
-        layout.add_widget(title_label)
+        """title_label = MDLabel(text="PillPal", halign="center",font_style="H1")
+        layout.add_widget(title_label)"""
 
         # Image display
 
-        self.display_img = Image(source='pill.png', size_hint=(None, None), size=(300, 300), pos_hint={'center_x': 0.5})
+        self.display_img = Image(source='App Logo Ideas-2.jpg', size_hint=(None, None), size=(800, 800), pos_hint={'center_x': 0.5})
         layout.add_widget(self.display_img)
 
-        spacer = Widget(size_hint_y=None, height=300)  # Adjust height as needed
+        spacer = Widget(size_hint_y=None, height=200)  # Adjust height as needed
         layout.add_widget(spacer)
         # Start button
         start_button = MDFillRoundFlatButton(text="Start Camera", pos_hint={"center_x": 0.5})
@@ -184,6 +184,6 @@ class PillPalApp(MDApp):
     def stop_app(self, instance):
         self.stop()
 
-
 if __name__ == '__main__':
     PillPalApp().run()
+

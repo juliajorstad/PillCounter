@@ -134,7 +134,7 @@ class PillPalApp(MDApp):
 
         # Image display
 
-        self.display_img = Image(source='kivy_app/App Logo Ideas-2.jpg', size_hint=(None, None), size=(800, 800), pos_hint={'center_x': 0.5})
+        self.display_img = Image(source='kivy_app/App Logo Ideas- 3.jpg', size_hint=(None, None), size=(700, 700), pos_hint={'center_x': 0.5})
         layout.add_widget(self.display_img)
 
         spacer = Widget(size_hint_y=None, height=200)  # Adjust height as needed

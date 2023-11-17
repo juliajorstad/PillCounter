@@ -3,25 +3,33 @@ import cv2
 import numpy as np
 from roi import get_roi, resize_and_pad
 from roboflow import Roboflow
+from PIL import Image
+
 
 # load trained model
-model = YOLO("runs/segment/train2/weights/best.pt")
-
+model = YOLO("runs/segment/train3/weights/best.pt")
+#metrics=model.val()
 # train model
-#model.train(data='datasets/data.yaml', epochs=5, imgsz=640)
+model.train(data='datasets/data.yaml', epochs=20, imgsz=640)
 
 
-def get_class(cls_ids):
-    class_names = {0: "Capsules", 1: "Pills"}
+def count_classes(cls_ids):
+    map_class_names = {0: "Capsules", 1: "Pills"}
 
     class_counts = {}
 
-    for cls_id in cls_ids:
+    # loop though the tensor object with class ids
+    for class_id in cls_ids:
+        # convert the tensor value to int
+        class_id = int(class_id)
 
-        cls_id = int(cls_id)
-        class_name = class_names.get(cls_id, f"Unknown class {cls_id}")
+        # map the class id with the corresponding class name
+        class_name = map_class_names.get(class_id)
+
+        # if the class name is in the dictionary, increment value of this class by 1
         if class_name in class_counts:
             class_counts[class_name] += 1
+        # if class name not in dictionary, add the class name and value 1
         else:
             class_counts[class_name] = 1
 
@@ -69,17 +77,19 @@ def predict_with_yolo(captured_img):
     # Make a prediction
     results = model.predict(img)
     masks = results[0].masks
-    cls_ids = results[0].boxes.cls
 
-    mask_img = results[0].plot(labels=True, boxes=False)
+    # returns a tensor object a list of with class value from boxes
+    class_ids = results[0].boxes.cls
 
-    mask_img = cv2.cvtColor(mask_img, cv2.COLOR_RGB2BGR)
 
-    class_counts = get_class(cls_ids)
+    # plot the result image, returns numpy array of the image
+    annotated_img = results[0].plot(labels=True, boxes=False)
+
+    annotated_img = cv2.cvtColor(annotated_img, cv2.COLOR_RGB2BGR)
+
+    class_counts = count_classes(class_ids)
     predicted_image = show_results(masks,class_counts,img)
 
     return predicted_image
-
-
 
 

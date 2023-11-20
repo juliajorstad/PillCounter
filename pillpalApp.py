@@ -15,11 +15,12 @@ import os
 
 from pillDetectionYOLO import predict_with_yolo
 
-
+# create pop up window for uploading image
 class UploadPopup(Popup):
     def __init__(self, on_selection, **kwargs):
         super(UploadPopup, self).__init__(**kwargs)
         self.on_selection = on_selection
+        # chose path to folder to upload from
         self.filechooser = FileChooserIconView(path="datasets/test")
         self.content = self.filechooser
         self.filechooser.bind(on_submit=self.on_file_select)
@@ -28,11 +29,13 @@ class UploadPopup(Popup):
         if selection:
             self.dismiss()
             self.on_selection(selection[0])
+            
+# create pop up window for camera
 class CameraPopup(Popup):
     def __init__(self, **kwargs):
         super(CameraPopup, self).__init__(**kwargs)
         self.capture = cv2.VideoCapture(0)
-        self.stream_event = None  # Initialize stream_event here
+        self.stream_event = None  
 
         self.layout = BoxLayout(orientation='vertical')
         self.img1 = Image()
@@ -51,19 +54,19 @@ class CameraPopup(Popup):
         self.content = self.layout
         self.bind(on_open=self.start_stream)
         self.bind(on_dismiss=self.stop_stream)
-
+   
     def capture_or_retake_image(self, instance):
         if self.capture_button.text == 'Capture':
             # Capturing the image
             ret, frame = self.capture.read()
             if ret:
-                # Process the captured frame with YOLO
+                # Pass the captured image to function in pillDetectionYOLO.py module
                 processed_frame = predict_with_yolo(frame)
 
                 # Update the Kivy Image widget with the processed frame
                 self.update_image_with_frame(processed_frame)
 
-                # Optionally, stop the live stream
+                # stop webcam application
                 self.stop_stream()
 
                 # Change button text to "Retake"
@@ -122,6 +125,7 @@ class CameraPopup(Popup):
             # Optionally, stop the live stream
             self.stop_stream()
 
+# pop up window for main menu
 class PillPalApp(MDApp):
     def build(self):
 

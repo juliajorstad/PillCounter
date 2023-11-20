@@ -1,13 +1,22 @@
-# PillPal 
-This project was developed as a project for educational purposes.
-PillPalApp is a conceptual mobile application to identify pills using a camera or uploaded images. 
+# PillPal  
+
+This project was developed as a project for educational purposes. 
+
+PillPalApp is a conceptual mobile application to identify and count pills or capsules using a camera or uploaded images. 
 It employs YOLO (You Only Look Once) model for object detection and segmentation, integrated into a user-friendly interface built with 
 Kivy and KivyMD as a desktop application for visualization of the project.   
+
 
 Key Features:
 * Camera Capture: Users can capture images using their device's camera.
 * Image Upload: Users have the option to upload images from their device.
 * YOLO Model Integration: Utilizes the YOLO model for real-time object detection.
+
+Team members: 
+
+* Julia Jørstad
+* Tuva Aarseth
+* Tønnes Abrahamsen
 
 ## Requirements
 * Python > 3.8
@@ -42,12 +51,22 @@ The functions in "pillDetectionYOLO.py" takes in the captured image either from 
 The original image is then presented in the app with number of objects detected for the two classes, pills and capsules, and a marker is placed in the center of each detected object. 
 
 ### Kivy desktop app
-We used Kivy and KivyMD to visualize the results in a simple desktop app. The code was written using ChatGPT and Kivy Documentations (link:https://kivymd.readthedocs.io/en/1.1.1/getting-started/) as this was not the main focus of the project. 
+We used Kivy and KivyMD to visualize the results in a simple desktop app. The code was written using ChatGPT and Kivy Documentations (link:https://kivymd.readthedocs.io/en/1.1.1/getting-started/) as this was out of the scope for this project.  
+
 The app presents the user with two options: capture the image using the built in camera of the device with a retake button that enables the user to take a new image, and upload button to upload an image from the folder. The current path to uploading images is set to the test dataset that is added in the project. 
+
+
+ <img width="495" alt="Skjermbilde_2023-11-20_kl _15 24 20" src="https://github.com/juliajorstad/PillCounter/assets/58601228/ee090eef-1001-4fcc-804d-ded47f950365">
+
+
+The logo of the app was designed by Julia Jørstad
 
 ## Limitations
 * As this project was just a concept for a mobile app, the application is only built with a desktop interface
-* The dataset needs refinement as the current trained model struggles to classify correctly. 
+* The dataset needs refinement: the classes is imbalanced, large variations in the characteristics of the images, missed labels in some objects, needs more data in general
+* The model is not working perfectly because of issues with the dataset
+* Lacking background images: current model detects and counts every object in the image as pills or capsules. Background images need to be added for the model to ignore.
+
 
 
 

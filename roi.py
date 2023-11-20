@@ -24,7 +24,7 @@ def get_roi(image):
         area_avg = np.mean(area)
 
         x, y, w, h = cv2.boundingRect(contour)
-
+        # check if coordinates are touching borders of image
         if x == 0 or y == 0 or (x + w) == width or (y + h) == height:
             continue  # skip since contour touches border of image
 

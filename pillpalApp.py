@@ -36,7 +36,7 @@ class CameraPopup(Popup):
         super(CameraPopup, self).__init__(**kwargs)
         self.capture = cv2.VideoCapture(0)
         self.stream_event = None  
-
+        
         self.layout = BoxLayout(orientation='vertical')
         self.img1 = Image()
         self.layout.add_widget(self.img1)
@@ -60,7 +60,7 @@ class CameraPopup(Popup):
             # Capturing the image
             ret, frame = self.capture.read()
             if ret:
-                # Pass the captured image to function in pillDetectionYOLO.py module
+                # Pass the captured image to function in pillDetectionYOLO.py module for processing
                 processed_frame = predict_with_yolo(frame)
 
                 # Update the Kivy Image widget with the processed frame

@@ -32,15 +32,19 @@ Team members:
 
 ## Documentation
 ### Dataset
-The images in the dataset is a combination of our own data and datasets found on Roboflow platform. 
+The images in the dataset is a combination of our own data and datasets from Roboflow platform. All the images can be found in the images folder.
 Link to the datasets can be found here:
 https://universe.roboflow.com/national-chung-cheng-university-miweg/color_medicine
 https://universe.roboflow.com/apple-developer-academy-postech-otfp4/pill-instance-segmentation
 
-The datasets are annotated for segmentation in YOLOv8 format using Roboflow, and exported locally for training the model. 
+The datasets are annotated for segmentation in YOLOv8 format using Roboflow, and exported locally for training the model. The data is splitted into 80/10/10 train,test and validation respectivly. The splitted datasets can be found in the project folder "datasets".
 Link to our dataset with labels can be downloaded here: https://universe.roboflow.com/ikt213/ikt2313project/dataset/5
 
-The data is splitted into 80/10/10 train,test and val respectivly. 
+"data.yaml" were created with the path to the train,test and validation images, number of classes defined as "nc" and the labels.
+
+The images in the folder "testImages" were not used in the model and does not contain any annotations. They were only used for testing the model within the app.
+The images in this folder are our own. 
+ 
 
 ### YOLO model
 In this project, we used a pre-trained segmentation model "yolov8s-seg.pt" as initial weights, and trained further with our own dataset.

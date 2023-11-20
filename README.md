@@ -45,10 +45,12 @@ The data is splitted into 80/10/10 train,test and val respectivly.
 ### YOLO model
 In this project, we used a pre-trained segmentation model "yolov8s-seg.pt" as initial weights, and trained further with our own dataset.
 The module "pillDetectionYOLO.py" is where the model is trained and deployed. 
-The best weights from the current model is located in 'runs/segment/train3/weights/best.pt'. Change this path in "pillDetectionYOLO.py" after training a new model.
+The best weights from the current model is located in 'runs/segment/train3/weights/best.pt'. The results from the model can be viewed in `runs/segment/train3´
 
-The functions in "pillDetectionYOLO.py" takes in the captured image either from webcamera or uploaded image from the app "pillpalApp.py". The image is then resized, passed to the trained model for predictions, and calculations is performed on the inference image to find the centroid of the mask and number of classes detected.
-The original image is then presented in the app with number of objects detected for the two classes, pills and capsules, and a marker is placed in the center of each detected object. 
+
+### Code
+The functions in "pillDetectionYOLO.py" takes in the captured image either from webcamera or uploaded image from the app "pillpalApp.py". The image is then resized using "roi.py", passed to the trained model for predictions, and calculations is performed on the inference image to find the centroid of the mask and number of classes detected using functions "count_classes" and "show_results".
+The original image is then presented in the app with number of objects detected for the two classes, pills and capsules, and a marker is placed in the center of each detected object from function "show_results" in "pillDetectionYOLO.py". 
 
 ### Kivy desktop app
 We used Kivy and KivyMD to visualize the results in a simple desktop app. The code was written using ChatGPT and Kivy Documentations (link:https://kivymd.readthedocs.io/en/1.1.1/getting-started/) as this was out of the scope for this project.  

@@ -10,7 +10,7 @@ from PIL import Image
 model = YOLO("runs/segment/train3/weights/best.pt")
 #metrics=model.val()
 # train model
-model.train(data='datasets/data.yaml', epochs=20, imgsz=640)
+# model.train(data='datasets/data.yaml', epochs=20, imgsz=640)
 
 
 def count_classes(cls_ids):
@@ -36,8 +36,6 @@ def count_classes(cls_ids):
     return class_counts
 def show_results(masks,class_counts,img):
     if masks is not None:
-
-        #class_counts = get_class()
 
         # Set the position and text color
         text_position = (20, 50)  # Top-left corner of the image
@@ -82,7 +80,7 @@ def predict_with_yolo(captured_img):
     class_ids = results[0].boxes.cls
 
 
-    # plot the result image, returns numpy array of the image
+    # plot the result image, returns numpy array of the image. Set boxes=True to show bounding boxes, class labels and probabilities
     annotated_img = results[0].plot(labels=True, boxes=False)
 
     annotated_img = cv2.cvtColor(annotated_img, cv2.COLOR_RGB2BGR)

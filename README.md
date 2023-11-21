@@ -48,8 +48,10 @@ The images in this folder are our own.
 
 ### YOLO model
 In this project, we used a pre-trained segmentation model "yolov8s-seg.pt" as initial weights, and trained further with our own dataset.
-The module "pillDetectionYOLO.py" is where the model is trained and deployed. 
-The best weights from the current model is located in 'runs/segment/train3/weights/best.pt'. The results from the model can be viewed in `runs/segment/train3´
+The module "pillDetectionYOLO.py" is where the model is trained and deployed.  
+
+The best weights from the current model trained with 10 epochs is located in 'runs/segment/train3/weights/best.pt'. The results from the model can be viewed in `runs/segment/train3´, and the predicted images from validation can be viewed in 'runs/segment/val' folder.
+The results from training for 20 epochs which caused overfitting is located in train4 folder.
 
 
 ### Code

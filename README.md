@@ -56,7 +56,7 @@ The results from training for 20 epochs which caused overfitting is located in t
 
 
 ### Code
-The functions in ```pillDetectionYOLO.py``` takes in the captured image either from webcamera or uploaded image from the app ```pillpalApp.py```. The image is then resized using ```roi.py```, passed to the trained model for predictions, and calculations is performed on the inference image to find the centroid of the mask and number of classes detected using functions ```count_classes``` and ```show_results```.
+The functions in ```pillDetectionYOLO.py``` takes in the captured image either from webcamera or uploaded image from the app ```pillpalApp.py```. The image is then resized using function ```resize_and_pad``` from ```functions.py```, passed to the trained model for predictions, and calculations is performed on the inference image to find the centroid of the mask and number of classes detected using functions ```count_classes``` and ```show_results```.
 The original image is then presented in the app with number of objects detected for the two classes, pills and capsules, and a marker is placed in the center of each detected object from function ```show_results``` in ```pillDetectionYOLO.py```. 
 
 ### Kivy desktop app

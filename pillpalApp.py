@@ -1,4 +1,3 @@
-
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDFillRoundFlatButton
@@ -15,6 +14,7 @@ import os
 
 from pillDetectionYOLO import predict_with_yolo
 
+
 # create pop up window for uploading image
 class UploadPopup(Popup):
     def __init__(self, on_selection, **kwargs):
@@ -29,14 +29,15 @@ class UploadPopup(Popup):
         if selection:
             self.dismiss()
             self.on_selection(selection[0])
-            
+
+
 # create pop up window for camera
 class CameraPopup(Popup):
     def __init__(self, **kwargs):
         super(CameraPopup, self).__init__(**kwargs)
         self.capture = cv2.VideoCapture(0)
-        self.stream_event = None  
-        
+        self.stream_event = None
+
         self.layout = BoxLayout(orientation='vertical')
         self.img1 = Image()
         self.layout.add_widget(self.img1)
@@ -54,7 +55,7 @@ class CameraPopup(Popup):
         self.content = self.layout
         self.bind(on_open=self.start_stream)
         self.bind(on_dismiss=self.stop_stream)
-   
+
     def capture_or_retake_image(self, instance):
         if self.capture_button.text == 'Capture':
             # Capturing the image
@@ -76,7 +77,7 @@ class CameraPopup(Popup):
             self.restart_stream()
             self.capture_button.text = 'Capture'
 
-    def restart_stream (self):
+    def restart_stream(self):
         # Release the existing capture if it exists
         if self.capture is not None:
             self.capture.release()
@@ -84,6 +85,7 @@ class CameraPopup(Popup):
         # Restart the capture and stream
         self.capture = cv2.VideoCapture(0)
         self.start_stream()
+
     def start_stream(self, *args):
         if self.stream_event is None or not self.stream_event.is_triggered:
             self.stream_event = Clock.schedule_interval(self.update_image, 1.0 / 30.0)
@@ -93,7 +95,8 @@ class CameraPopup(Popup):
             Clock.unschedule(self.stream_event)
             if self.capture is not None:
                 self.capture.release()
-    def close_popup (self, instance):
+
+    def close_popup(self, instance):
         self.stop_stream()
         self.dismiss()
 
@@ -105,9 +108,7 @@ class CameraPopup(Popup):
             texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             self.img1.texture = texture
 
-
-
-    def update_image_with_frame (self, frame):
+    def update_image_with_frame(self, frame):
         buf = cv2.flip(frame, 0).tobytes()
         texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
         texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
@@ -125,10 +126,10 @@ class CameraPopup(Popup):
             # Optionally, stop the live stream
             self.stop_stream()
 
+
 # pop up window for main menu
 class PillPalApp(MDApp):
     def build(self):
-
         # App title
         self.theme_cls.primary_palette = "Green"
         layout = MDBoxLayout(orientation='vertical', padding=10, spacing=10)
@@ -138,7 +139,8 @@ class PillPalApp(MDApp):
 
         # Image display
 
-        self.display_img = Image(source='kivy_app/App Logo Ideas- 3.jpg', size_hint=(None, None), size=(700, 700), pos_hint={'center_x': 0.5})
+        self.display_img = Image(source='kivy_app/App Logo Ideas- 3.jpg', size_hint=(None, None), size=(700, 700),
+                                 pos_hint={'center_x': 0.5})
         layout.add_widget(self.display_img)
 
         spacer = Widget(size_hint_y=None, height=200)  # Adjust height as needed
@@ -184,6 +186,6 @@ class PillPalApp(MDApp):
     def stop_app(self, instance):
         self.stop()
 
+
 if __name__ == '__main__':
     PillPalApp().run()
-

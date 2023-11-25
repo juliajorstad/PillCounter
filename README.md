@@ -1,6 +1,6 @@
 # PillPal  
 
-This project was developed as a project for educational purposes. 
+This project was developed as a part of the course Machine Vision. 
 
 PillPalApp is a conceptual mobile application to identify and count pills or capsules using a camera or uploaded images. 
 It employs YOLO (You Only Look Once) model for object detection and segmentation, integrated into a user-friendly interface built with 

@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import cv2
 import numpy as np
-from roi import get_roi, resize_and_pad
+from functions import resize_and_pad
 from roboflow import Roboflow
 from PIL import Image
 
